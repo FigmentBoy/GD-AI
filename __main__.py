@@ -44,7 +44,7 @@ class Brain():
             else:
                 unclick()
         unclick()
-        self.fitness = max(0,math.pow(math.ceil(cx),2)-(clicks/10))
+        self.fitness = max(0,math.pow(math.ceil(cx),2))
         self.previousFitness = math.floor(cx)
         self.percent = mem.percent
 
