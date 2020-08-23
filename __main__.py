@@ -24,45 +24,52 @@ class Brain():
         self.inputs = framesperround
         self.randomize()
         self.fitness = 0
+        self.previousFitness = 0
+        self.percent = 0
 
     def randomize(self):
         for i in range(self.inputs):
-            self.directions.append(random.uniform(0, 1) > 0.99)
+            self.directions.append(random.uniform(0, 1) > 0.95)
 
     def run(self):
         mem.set_x_pos(0)
         while True:
-            
-            cp = mem.get_percent()
+            clicks = 0
             cx = mem.get_x_pos()
-            if mem.is_dead() or cp >= 100 or cx > len(self.directions):
+            if mem.is_dead():
                 break
             if self.directions[math.floor(cx)]:
                 click()
+                clicks += 1
             else:
                 unclick()
         unclick()
-        self.fitness = mem.get_percent()
+        self.fitness = max(0,math.pow(math.ceil(cx),2)-(clicks/10))
+        self.previousFitness = math.floor(cx)
+        self.percent = mem.percent
 
     def clone(self):
         clone = Brain(self.inputs)
         clone.directions = []
         for i in self.directions:
             clone.directions.append(i)
+        
+        clone.fitness = self.fitness
+        clone.previousFitness = self.previousFitness
 
         return clone
 
     def mutate(self):
-        mutationRate = 0.1
-        for i in range(len(self.directions)):
+        mutationRate = 0.5
+        for i in range(max(self.previousFitness-300,0), min(self.previousFitness+100, math.floor(mem.get_level_length() + 100))):
             rand = random.uniform(0, 1)
             if rand < mutationRate:
-                self.directions[i] = random.uniform(0,1) > 0.99
+                self.directions[i] = random.uniform(0,1) > 0.95
         
 class Population:
     def __init__(self, amount, framesperround):
         self.pop = []
-        for i in range(amount):
+        for i in range(amount+1):
             self.pop.append(Brain(framesperround))
 
         self.gen = 0
@@ -73,14 +80,16 @@ class Population:
         print(f'GEN {self.gen}')
         mem.player_kill()
         
-        for i in range(len(self.pop)):
+        if self.gen == 1:
+            length = range(len(self.pop))
+        else:
+            length = range(1, len(self.pop))
+
+        for i in length:
             while mem.is_dead():
                 pass
             self.pop[i].run()
-            if self.pop[i].fitness >= 100:
-                print(self.pop[i].directions)
-                return
-            print(f'FINISHED {i}/{len(self.pop)}: {self.pop[i].fitness}')
+            print(f'FINISHED {i}/{len(self.pop)-1}: {self.pop[i].fitness} ({self.pop[i].percent}%)')
             mem.player_kill()
             
         self.naturalSelection()
@@ -121,5 +130,6 @@ class Population:
         for i in range(1, len(self.pop)):
             self.pop[i].mutate()
 
-pop = Population(10, math.floor(mem.get_level_length() + 100))
+print(mem.get_level_length())
+pop = Population(1, math.floor(mem.get_level_length() + 100))
 pop.run()
