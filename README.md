@@ -7,10 +7,6 @@ Open geometry dash
 
 Open level you want to work on
 
-Die and pause before a respawn
-
 Open the directory of the bot in command prompt
 
 Type `py .` in console
-
-Click the play button
