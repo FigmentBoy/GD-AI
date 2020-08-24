@@ -5,7 +5,7 @@ import win32gui
 import win32api
 import win32con
 import json
-
+import sys
 
 mem = gd.memory.get_memory()
 win = win32gui.FindWindow(None, 'Geometry Dash')
@@ -133,6 +133,12 @@ class Population:
 
 
 pop = Population(1, math.floor(mem.get_level_length() + 100))
-pop.run()
 
-    
+
+if __name__ == '__main__':
+    try:
+        pop.run()
+    except KeyboardInterrupt:
+        with open('replay.json', 'w') as file:
+            file.write(str([int(l) for l in pop.pop[0].directions]).replace("'", '"').replace(' ', ''))
+        exit()
