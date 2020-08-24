@@ -28,7 +28,7 @@ class Brain():
 
     def randomize(self):
         for i in range(self.inputs):
-            self.directions.append(random.uniform(0, 1) > 0.95)
+            self.directions.append(False)
 
     def run(self):
         mem.set_x_pos(0)
