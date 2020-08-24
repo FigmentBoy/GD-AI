@@ -90,7 +90,7 @@ class Population:
 
             if self.pop[i].percent >= 100:
                 with open('replay.json', 'w') as file:
-                    file.write(str([str(l) for l in self.pop[i].directions]).replace("'", '"'))
+                    file.write(str([int(l) for l in self.pop[i].directions]).replace("'", '"').replace(' ', ''))
                     return
             
         self.naturalSelection()

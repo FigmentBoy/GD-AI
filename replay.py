@@ -17,7 +17,7 @@ def unclick():
 
 print('Playing replay!')
 with open('replay.json', 'r') as file:
-    l = [l == "True" for l in json.loads(file.read())]
+    l = [bool(l) for l in json.loads(file.read())]
     mem.player_kill()
     while mem.is_dead() or mem.percent > 0:
         pass
