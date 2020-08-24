@@ -1,12 +1,11 @@
-
+import random
+import math
 import gd
-import keyboard
 import win32gui
 import win32api
 import win32con
-import random
-import time
-import math
+import json
+
 
 mem = gd.memory.get_memory()
 win = win32gui.FindWindow(None, 'Geometry Dash')
@@ -33,18 +32,15 @@ class Brain():
 
     def run(self):
         mem.set_x_pos(0)
-        while True:
+        while not mem.is_dead() and mem.percent < 100:
             clicks = 0
             cx = mem.get_x_pos()
-            if mem.is_dead():
-                break
             if self.directions[math.floor(cx)]:
                 click()
-                clicks += 1
             else:
                 unclick()
         unclick()
-        self.fitness = max(0,math.pow(math.ceil(cx),2))
+        self.fitness = max(0,math.pow(mem.percent,2))
         self.previousFitness = math.floor(cx)
         self.percent = mem.percent
 
@@ -86,11 +82,16 @@ class Population:
             length = range(1, len(self.pop))
 
         for i in length:
-            while mem.is_dead():
+            while mem.is_dead() or mem.percent > 0:
                 pass
             self.pop[i].run()
             print(f'FINISHED {i}/{len(self.pop)-1}: {self.pop[i].fitness} ({self.pop[i].percent}%)')
             mem.player_kill()
+
+            if self.pop[i].percent >= 100:
+                with open('replay.json', 'w') as file:
+                    file.write(str([str(l) for l in self.pop[i].directions]).replace("'", '"'))
+                    return
             
         self.naturalSelection()
         self.run()
@@ -130,6 +131,8 @@ class Population:
         for i in range(1, len(self.pop)):
             self.pop[i].mutate()
 
-print(mem.get_level_length())
+
 pop = Population(1, math.floor(mem.get_level_length() + 100))
 pop.run()
+
+    

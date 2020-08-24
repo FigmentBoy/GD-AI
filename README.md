@@ -13,4 +13,5 @@ Open the directory of the bot in command prompt
 
 Type `py .` in console
 
-Click the play button
+# How to play a replay of a completed run
+If a got 100% of the level, it will save a `replay.json` file. You can save this anywhere and to replay it, put the `replay.json` file back in this folder and type `py replay.py`. This will replay a single level the bot learned
