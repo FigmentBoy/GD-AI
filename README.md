@@ -1,7 +1,7 @@
 # How to set this up (WINDOWS ONLY):
 Download Python and the \_\_main\_\_.py file
 
-Install gd.py by typing `py -m pip install gd.py pywin32`
+Install gd.py by typing `py -m pip install https://github.com/NeKitDS/gd.py/archive/master.zip pywin32`
 
 Open geometry dash
 
