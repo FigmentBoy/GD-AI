@@ -119,6 +119,7 @@ class Population:
             self.sumFitness += brain.fitness
 
     def selectParent(self):
+        self.getSumFitness()
         runningSum = 0
         rand = random.uniform(0, self.sumFitness)
 
